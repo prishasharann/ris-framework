@@ -1,0 +1,78 @@
+{
+  "_comment": "Phase 1 (ideal model) shared parameter file. Owner: A. Read by B (scene + candidate RIS sites), C (channel format, noise, thresholds), D (paper tables). All lengths in metres, angles in degrees, z is height.",
+
+  "rf": {
+    "carrier_freq_hz": 28e9,
+    "bandwidth_hz": 100e6,
+    "tx_power_dbm": 40.0,
+    "noise_figure_db": 9.0,
+    "noise_psd_dbm_per_hz": -174.0,
+    "noise_power_dbm": -85.0,
+    "bs_antenna_gain_dbi": 10.0,
+    "ue_antenna_gain_dbi": 0.0,
+    "_noise_note": "noise_power_dbm = -174 + 10log10(BW) + NF = -174 + 80 + 9 = -85 dBm (computed in code, value here is for reference)"
+  },
+
+  "ris": {
+    "N_values": [1024, 4096, 9216, 16384],
+    "array_shape_for_N": {"1024": [32, 32], "4096": [64, 64], "9216": [96, 96], "16384": [128, 128]},
+    "element_spacing_wavelengths": 0.5,
+    "element_gain_dbi": 4.97,
+    "element_pattern": "cos(theta_incidence) power pattern per element, zero behind the surface (cos<0)",
+    "reflection_amplitude": 1.0,
+    "phase_resolution": "continuous (ideal, Phase 1)",
+    "mount_height_m": 12.0
+  },
+
+  "scene": {
+    "bs_position": [0.0, 0.0, 25.0],
+    "ue_grid": {"x_min": 10.0, "x_max": 110.0, "y_min": -50.0, "y_max": 50.0, "step_m": 5.0, "z": 1.5,
+                "num_points": 441},
+    "buildings": [
+      {"name": "B1", "x": [40.0, 60.0], "y": [-15.0, 15.0], "height_m": 30.0},
+      {"name": "B2", "x": [80.0, 100.0], "y": [25.0, 45.0], "height_m": 30.0}
+    ],
+    "blockage_penalty_db": 40.0,
+    "_blockage_note": "Any link (BS-UE, BS-RIS, RIS-UE) whose straight segment crosses a building box gets a flat 40 dB penalty (mmWave penetration/diffraction proxy). RIS-link blockage is evaluated at the RIS centre. B should use the SAME footprints/heights and the same candidate sites."
+  },
+
+  "ris_candidate_sites": [
+    {"id": "S1", "position": [35.0, 25.0, 12.0]},
+    {"id": "S2", "position": [35.0, -25.0, 12.0]},
+    {"id": "S3", "position": [65.0, 25.0, 12.0]},
+    {"id": "S4", "position": [65.0, -25.0, 12.0]},
+    {"id": "S5", "position": [95.0, 5.0, 12.0]},
+    {"id": "S6", "position": [75.0, 50.0, 12.0]}
+  ],
+
+  "ris_orientations": {
+    "azimuth_deg_of_normal": [0, 45, 90, 135, 180, 225, 270, 315],
+    "downtilt_deg": [0, 20],
+    "_note": "Normal = (cos(tilt)cos(az), cos(tilt)sin(az), -sin(tilt)). az=0 points along +x (away from the BS)."
+  },
+
+  "metrics": {
+    "coverage_snr_threshold_db": 10.0,
+    "_note": "coverage = fraction of UE grid points with SNR >= threshold. Best placement = highest mean coverage over all four N (tie-break: mean SNR)."
+  },
+
+  "channel_file_format": {
+    "file_name_pattern": "channels_A_N{N}.npz",
+    "keys": {
+      "hd": "complex64 [U]       BS->UE direct channel (amplitude incl. antenna gains + blockage, phase = -2*pi*d/lambda)",
+      "hr": "complex64 [N]       BS->RIS channel per element (incl. BS gain, element gain/pattern, blockage)",
+      "g":  "complex64 [U, N]    RIS->UE channel per element (incl. UE gain, element pattern, blockage)",
+      "ue_xyz": "float32 [U,3]   UE positions",
+      "elem_xyz": "float32 [N,3] RIS element positions",
+      "ris_center": "float32 [3]", "ris_normal": "float32 [3]",
+      "tx_power_w": "float: transmit power in Watts",
+      "noise_power_w": "float: noise power in Watts",
+      "snr_threshold_db": "float: coverage threshold",
+      "ideal_snr_db": "float32 [U] SNR with ideal continuous phases (for sanity checks)",
+      "noris_snr_db": "float32 [U] SNR without RIS"
+    },
+    "snr_formula": "gamma[u] = Pt * |hd[u] + sum_n hr[n] * exp(j*theta[u,n]) * g[u,n]|^2 / sigma2   (theta is chosen per UE)",
+    "ideal_phase": "theta[u,n] = -angle(hr[n]*g[u,n]) + angle(hd[u])",
+    "note_for_B_and_C": "B: write files with exactly these keys (U,N may differ). C: use channel_io.py (load_channels, ideal_phase, snr_db) so rounding code works on A's and B's files identically."
+  }
+}
