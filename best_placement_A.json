@@ -1,0 +1,60 @@
+{
+  "overall_best": {
+    "site": "S3",
+    "position": [
+      65.0,
+      25.0,
+      12.0
+    ],
+    "az_deg": 270,
+    "downtilt_deg": 20,
+    "mean_coverage_pct_over_N": 78.06122448979592,
+    "mean_snr_db_over_N": 26.87088181080949
+  },
+  "best_per_N": [
+    {
+      "N": 1024,
+      "best_site": "S3",
+      "best_az": 270,
+      "best_tilt": 0,
+      "coverage_pct": 64.85260770975057,
+      "mean_snr_db": 23.293418115487604,
+      "p5_snr_db": -6.72608608953304,
+      "shadow_coverage_pct": 19.270833333333336,
+      "same_as_overall_best": false
+    },
+    {
+      "N": 4096,
+      "best_site": "S3",
+      "best_az": 270,
+      "best_tilt": 20,
+      "coverage_pct": 82.76643990929705,
+      "mean_snr_db": 26.195653948933828,
+      "p5_snr_db": -6.675537964030069,
+      "shadow_coverage_pct": 60.41666666666666,
+      "same_as_overall_best": true
+    },
+    {
+      "N": 9216,
+      "best_site": "S3",
+      "best_az": 270,
+      "best_tilt": 20,
+      "coverage_pct": 82.76643990929705,
+      "mean_snr_db": 28.223677227089667,
+      "p5_snr_db": -6.59341691704755,
+      "shadow_coverage_pct": 60.41666666666666,
+      "same_as_overall_best": true
+    },
+    {
+      "N": 16384,
+      "best_site": "S3",
+      "best_az": 270,
+      "best_tilt": 20,
+      "coverage_pct": 82.76643990929705,
+      "mean_snr_db": 29.820080147590545,
+      "p5_snr_db": -6.499135727377608,
+      "shadow_coverage_pct": 60.41666666666666,
+      "same_as_overall_best": true
+    }
+  ]
+}
